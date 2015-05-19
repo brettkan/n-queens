@@ -48,26 +48,26 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
 
   //function to recursively seed rooks in decision tree and sub-trees
-  var innerFunction = function(board, rowCounter){
+  var innerFunction = function(rowCounter){
     if (rowCounter === n){
       solutionCount++;
       return;
     }
     for (var col = 0; col < n; col++){
       // place rook on board then check if there's conflict
-      board.togglePiece(rowCounter, col);
-      if (board.hasColConflictAt(col)){
-        board.togglePiece(rowCounter, col);
+      solution.togglePiece(rowCounter, col);
+      if (solution.hasColConflictAt(col)){
+        solution.togglePiece(rowCounter, col);
         // if there would be conflict, this won't be a starting point
         continue;
       }
-      innerFunction(board, rowCounter+1);
-      board.togglePiece(rowCounter, col);
+      innerFunction(rowCounter+1);
+      solution.togglePiece(rowCounter, col);
     }
   };
 
   var solution = new Board({n:n});  // not declared in a function, so each iteration still works on the same solution board
-  innerFunction(solution, 0);
+  innerFunction(0);
 
 /*
   for(var i =0; i<n; i++){
@@ -101,34 +101,28 @@ window.returnAllNQueensSolutions = function(n) {
   }
 
   //function to recursively seed rooks in decision tree and sub-trees
-  var innerFunction = function(board, rowCounter){
+  var innerFunction = function(rowCounter){
     if (rowCounter === n){
-      var boardArray = board.rows();
+      var boardArray = solution.rows();
       var copy = matrixCopy(boardArray);
       allSolutions.push(copy);
       return;
     }
     for (var col = 0; col < n; col++){
       // place queen on board then check if there's conflict
-      board.togglePiece(rowCounter, col);
-      // if (!board.hasAnyQueenConflictsOn(rowCounter, col)) {
-      //   innerFunction(board, rowCounter + 1);
-      // }
-
-      // board.togglePiece(rowCounter, col);
-
-      if (board.hasAnyQueenConflictsOn(rowCounter, col)){
-        board.togglePiece(rowCounter, col);
-        // if there would be conflict, this won't be a starting point
-        continue;
+      solution.togglePiece(rowCounter, col);
+      // if board doesn't have conflicts, recurse
+      if (!solution.hasAnyQueenConflictsOn(rowCounter, col)) {
+        innerFunction(rowCounter + 1);
       }
-      innerFunction(board, rowCounter+1);
-      board.togglePiece(rowCounter, col);
+
+      // either way, untoggle
+      solution.togglePiece(rowCounter, col);
     }
   };
 
   var solution = new Board({n:n});  // not declared in a function, so each iteration still works on the same solution board
-  innerFunction(solution, 0);
+  innerFunction(0);
 
   return allSolutions;
 };
