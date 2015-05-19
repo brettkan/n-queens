@@ -102,6 +102,7 @@ window.returnAllNQueensSolutions = function(n) {
 
   //function to recursively seed rooks in decision tree and sub-trees
   var innerFunction = function(rowCounter){
+
     if (rowCounter === n){
       var boardArray = solution.rows();
       var copy = matrixCopy(boardArray);
@@ -112,7 +113,9 @@ window.returnAllNQueensSolutions = function(n) {
       // place queen on board then check if there's conflict
       solution.togglePiece(rowCounter, col);
       // if board doesn't have conflicts, recurse
-      if (!solution.hasAnyQueenConflictsOn(rowCounter, col)) {
+
+
+      if (!solution.checkQueenConflictsOn(rowCounter, col)) {
         innerFunction(rowCounter + 1);
       }
 

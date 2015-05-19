@@ -50,6 +50,16 @@
       );
     },
 
+    // Doesn't check for row conflicts
+    // Solver functions automatically set piece on new row
+    checkQueenConflictsOn: function(rowIndex, colIndex) {
+      return (
+        this.hasColConflictAt(colIndex) ||
+        this.hasMajorDiagonalConflictAt(this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)) ||
+        this.hasMinorDiagonalConflictAt(this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex))
+      );
+    },
+
     hasAnyQueensConflicts: function() {
       return this.hasAnyRooksConflicts() || this.hasAnyMajorDiagonalConflicts() || this.hasAnyMinorDiagonalConflicts();
     },
