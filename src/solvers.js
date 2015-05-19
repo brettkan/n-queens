@@ -47,6 +47,8 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
 
+  var board = new Board({n:n});  // not declared in a function, so each iteration still works on the same solution board
+
   //function to recursively seed rooks in decision tree and sub-trees
   var innerFunction = function(rowCounter){
     if (rowCounter === n){
@@ -55,18 +57,18 @@ window.countNRooksSolutions = function(n) {
     }
     for (var col = 0; col < n; col++){
       // place rook on board then check if there's conflict
-      solution.togglePiece(rowCounter, col);
-      if (solution.hasColConflictAt(col)){
-        solution.togglePiece(rowCounter, col);
-        // if there would be conflict, this won't be a starting point
-        continue;
+      board.togglePiece(rowCounter, col);
+
+      if (!board.hasColConflictAt(col)){
+        // if no conflict, recurse
+        innerFunction(rowCounter+1);
       }
-      innerFunction(rowCounter+1);
-      solution.togglePiece(rowCounter, col);
+      
+      // either way, toggle off
+      board.togglePiece(rowCounter, col);
     }
   };
 
-  var solution = new Board({n:n});  // not declared in a function, so each iteration still works on the same solution board
   innerFunction(0);
 
 /*
@@ -98,7 +100,7 @@ window.returnAllNQueensSolutions = function(n) {
       result[i] = copy;
     }
     return result;
-  }
+  };
 
   //function to recursively seed rooks in decision tree and sub-trees
   var innerFunction = function(rowCounter){
