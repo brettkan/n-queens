@@ -64,27 +64,9 @@ window.countNRooksSolutions = function(n) {
 
   var board = new Board({n:n});  // not declared in a function, so each iteration still works on the same solution board
 
-  //function to recursively seed rooks in decision tree and sub-trees
-  var innerFunction = function(rowCounter){
-    if (rowCounter === n){
-      solutionCount++;
-      return;
-    }
-    for (var col = 0; col < n; col++){
-      // place rook on board then check if there's conflict
-      board.togglePiece(rowCounter, col);
-
-      if (!board.hasColConflictAt(col)){
-        // if no conflict, recurse
-        innerFunction(rowCounter+1);
-      }
-
-      // either way, toggle off
-      board.togglePiece(rowCounter, col);
-    }
-  };
-
-  innerFunction(0);
+  findSolution(0, n, board, "hasAnyColConflicts", function() {
+    solutionCount++;
+  });
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
