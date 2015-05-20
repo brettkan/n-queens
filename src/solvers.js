@@ -16,8 +16,7 @@
 
 window.findSolution = function(row, n, board, validator, callback) {
   if (row === n){
-    var result = callback();
-    return result;
+    return callback();
     // var boardArray = board.rows();
     // var copy = matrixCopy(boardArray);
     // allSolutions.push(copy);
@@ -31,7 +30,7 @@ window.findSolution = function(row, n, board, validator, callback) {
     // check if board has conflict
     // if board doesn't have conflicts, recurse
     if (!board[validator]()) {
-      findSolution(row + 1);
+      var result = findSolution(row + 1, n, board, validator, callback);
 
       if (result) {
         return result;
@@ -45,26 +44,13 @@ window.findSolution = function(row, n, board, validator, callback) {
 
 window.findNRooksSolution = function(n) {
 
-  var solution = new Board({n:n});
+  var board = new Board({n:n});
+  var solution = findSolution(0,n,board,"hasAnyColConflicts",function(){
+    return _.map(board.rows(), function(eachRow){
+      return eachRow.slice();
+    });
+  });
 
-  var rowCounter = 0;
-  var innerFunction = function(){
-    for(var col = 0; col < n; col++){
-      if(rowCounter === n){
-        return;
-      }
-      solution.togglePiece(rowCounter, col);
-      // note - come back to this
-      if (solution.hasAnyRooksConflicts()){
-        solution.togglePiece(rowCounter, col);
-        continue;
-      }
-      rowCounter++;
-      innerFunction();
-    }
-  };
-  innerFunction();
-  solution = solution.rows();
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
