@@ -14,6 +14,35 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
+window.findSolution = function(row, n, board, validator, callback) {
+  if (row === n){
+    var result = callback();
+    return result;
+    // var boardArray = board.rows();
+    // var copy = matrixCopy(boardArray);
+    // allSolutions.push(copy);
+    // return;
+  }
+
+  for (var col = 0; col < n; col++){
+    // place piece on board
+    board.togglePiece(row, col);
+
+    // check if board has conflict
+    // if board doesn't have conflicts, recurse
+    if (!board[validator]()) {
+      findSolution(row + 1);
+
+      if (result) {
+        return result;
+      }
+    }
+
+    // either way, untoggle
+    board.togglePiece(row, col);
+  }
+};
+
 window.findNRooksSolution = function(n) {
 
   var solution = new Board({n:n});
@@ -63,7 +92,7 @@ window.countNRooksSolutions = function(n) {
         // if no conflict, recurse
         innerFunction(rowCounter+1);
       }
-      
+
       // either way, toggle off
       board.togglePiece(rowCounter, col);
     }
@@ -71,18 +100,6 @@ window.countNRooksSolutions = function(n) {
 
   innerFunction(0);
 
-/*
-  for(var i =0; i<n; i++){
-    // n starting points
-    var solution = new Board({n:n});  // not declared in a function, so each iteration still works on the same solution board
-    solution.togglePiece(0, i);
-    // move to the next row
-    // rowCounter = 1;
-    innerFunction(solution, 1);
-    //untoggle so that each iteration and sub-iteration (in innerFunction) can be unpolluted
-    solution.togglePiece(0,i);
-  }
-*/
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
